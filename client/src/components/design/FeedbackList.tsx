@@ -1,31 +1,69 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useFeedbackStore } from "../../zustand/feedbackStore";
+import type { Feedback } from "../../types";
 
 export const FeedbackList = ({ designId }: { designId: string }) => {
-    const feedbackMap = useFeedbackStore((state) => state.feedbacks);
-    const feedbacks = useMemo(() => feedbackMap[designId] || [], [feedbackMap, designId]);
+    const {
+        getFeedbacksByDesignId,
+        loading,
+        error,
+    } = useFeedbackStore();
+
+    const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        const loadFeedbacks = async () => {
+            const fetched = await getFeedbacksByDesignId(designId);
+            setFeedbacks(fetched);
+            setLoaded(true);
+        };
+
+        if (!loaded) loadFeedbacks();
+    }, [loaded, getFeedbacksByDesignId, designId]);
+
+    if (loading) {
+        return <p className="text-gray-400 text-sm text-center">Loading feedbacks...</p>;
+    }
+
+    if (error) {
+        return <p className="text-red-500 text-sm text-center">{error}</p>;
+    }
+
+    if (!feedbacks.length) {
+        return <p className="text-gray-400 text-sm text-center">No feedback yet.</p>;
+    }
 
     return (
         <div className="space-y-2">
             {feedbacks.map((f) => (
                 <div
-                    key={f.id}
-                    className="bg-gray-800 p-3 rounded-md text-white flex items-start gap-3"
+                    key={f._id}
+                    className="bg-gray-900 p-2 px-3 rounded-sm text-white flex items-start gap-3"
                 >
-                    <img
-                        src={f.avatar}
-                        alt={f.user}
-                        className="w-8 h-8 rounded-full object-cover"
-                    />
+                    {/* Avatar */}
+                    <div className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center font-semibold uppercase text-lg">
+                        {f.name.charAt(0)}
+                    </div>
+
+                    {/* Feedback content */}
                     <div className="flex-1">
-                        <div className="flex justify-between items-center mb-0.5">
-                            <span className="font-semibold text-sm">{f.user}</span>
-                            <span className="text-gray-400 text-xs">{f.date}</span>
+                        <div className="flex justify-between items-center mb-1 gap-2 flex-wrap sm:flex-nowrap">
+                            {/* Name + Stars Grouped */}
+                            <div className="flex items-center gap-2">
+                                <span className="font-semibold text-sm text-white">{f.name}</span>
+                                <span className="text-yellow-400 text-xs whitespace-nowrap">
+                                    {"★".repeat(f.rating)}{"☆".repeat(5 - f.rating)}
+                                </span>
+                            </div>
+
+                            {/* Date */}
+                            <div className="text-gray-400 text-xs whitespace-nowrap">
+                                {new Date(f.createdAt || "").toLocaleDateString()}
+                            </div>
                         </div>
-                        <div className="text-xs mb-1">{f.text}</div>
-                        <div className="text-yellow-400 text-xs">
-                            {"★".repeat(f.rating)}{"☆".repeat(5 - f.rating)}
-                        </div>
+
+                        <div className="text-xs mb-1 text-gray-300">{f.message}</div>
                     </div>
                 </div>
             ))}

@@ -22,11 +22,12 @@ export interface Design {
 }
 
 export interface Feedback {
-  id: number;
-  user: string;
+  _id?: string;
+  name: string;
   rating: number;
-  text: string;
-  date: string;
   avatar?: string;
-  designId: string;
+  designId?: string;
+  message: string;
+  createdAt?: string;
+  email: string;
 }

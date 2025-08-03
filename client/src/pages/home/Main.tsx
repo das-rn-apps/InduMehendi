@@ -11,7 +11,7 @@ export default function HomePage() {
             <HeroCarousel />
             <MostPicked />
             <ExploreSection />
-            <BookingCTA />
+            <BookingCTA designId={""} />
         </div>
     );
 }

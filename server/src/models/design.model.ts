@@ -12,6 +12,7 @@ export interface IDesign {
   category?: string;
   tags?: string[];
   likesCount: number;
+  rating: number;
   isActive: boolean;
   ordered: number;
 }
@@ -55,6 +56,11 @@ const designSchema = new Schema<IDesignDocument, IDesignModel>(
       min: 0,
     },
     ordered: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    rating: {
       type: Number,
       default: 0,
       min: 0,

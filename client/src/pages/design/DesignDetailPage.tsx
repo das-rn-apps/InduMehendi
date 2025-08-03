@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import { useDesignStore } from "../../zustand/designStore";
 import { ImageCarousel } from "../../components/design/ImageCarousel";
 import { DesignMeta } from "../../components/design/DesignMeta";
-import { BookingForm } from "../../components/design/BookingForm";
 import { FeedbackForm } from "../../components/design/FeedbackForm";
 import { FeedbackList } from "../../components/design/FeedbackList";
+import { BookingCTA } from "../../components/home/BookingCTA";
 
 export default function DesignDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -45,7 +45,7 @@ export default function DesignDetailPage() {
     }
 
     return (
-        <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-4 mx-auto">
+        <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-2 mx-auto">
             <div className="lg:col-span-2">
                 <ImageCarousel images={design.images} />
             </div>
@@ -59,17 +59,16 @@ export default function DesignDetailPage() {
                     rating={design.rating}
                 />
                 <div className="py-4">
-                    <h2 className="text-xl font-semibold text-rose-700 mb-2">Book This Design</h2>
-                    <BookingForm designId={design._id} />
+                    <BookingCTA designId={design._id} />
                 </div>
             </div>
 
-            <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border-t pt-4">
+            <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="border-t">
                     <h2 className="text-xl font-semibold text-rose-700 mb-2">Leave a Feedback</h2>
                     <FeedbackForm designId={design._id} />
                 </div>
-                <div className="border-t pt-4">
+                <div className="border-t">
                     <h2 className="text-xl font-semibold text-rose-700 mb-2">What others are saying</h2>
                     <FeedbackList designId={design._id} />
                 </div>

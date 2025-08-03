@@ -16,8 +16,6 @@ export const uploadToCloudinary = async (
     secure: true, // Use HTTPS
   });
 
-  console.log(process.env.CLOUDINARY_CLOUD_NAME);
-
   return new Promise<UploadResult>((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder },

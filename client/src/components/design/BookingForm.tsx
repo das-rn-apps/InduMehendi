@@ -1,4 +1,3 @@
-// src/components/design/BookingForm.tsx
 import { useState } from "react";
 
 interface Props {
@@ -29,14 +28,14 @@ export const BookingForm = ({ designId }: Props) => {
     return (
         <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-200"
+            className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-white"
         >
             <input
                 type="text"
                 name="name"
                 placeholder="Your Name"
                 aria-label="Your Name"
-                className="p-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-rose-500"
+                className="w-full p-2 bg-gray-900 text-white border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
                 value={formData.name}
                 onChange={handleChange}
                 required
@@ -47,7 +46,7 @@ export const BookingForm = ({ designId }: Props) => {
                 name="email"
                 placeholder="Your Email"
                 aria-label="Your Email"
-                className="p-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-rose-500"
+                className="w-full p-2 bg-gray-900 text-white border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
                 value={formData.email}
                 onChange={handleChange}
                 required
@@ -58,7 +57,7 @@ export const BookingForm = ({ designId }: Props) => {
                 name="phone"
                 placeholder="Your Phone (optional)"
                 aria-label="Your Phone"
-                className="p-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-rose-500"
+                className="w-full p-2 bg-gray-900 text-white border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
                 value={formData.phone}
                 onChange={handleChange}
             />
@@ -67,7 +66,7 @@ export const BookingForm = ({ designId }: Props) => {
                 type="date"
                 name="date"
                 aria-label="Booking Date"
-                className="p-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-rose-500"
+                className="w-full p-2 bg-gray-900 text-white border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
                 value={formData.date}
                 onChange={handleChange}
                 required
@@ -77,7 +76,7 @@ export const BookingForm = ({ designId }: Props) => {
                 name="note"
                 placeholder="Additional Notes (optional)"
                 aria-label="Additional Notes"
-                className="md:col-span-2 p-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-rose-500"
+                className="md:col-span-2 w-full p-2 bg-gray-900 text-white border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
                 value={formData.note}
                 onChange={handleChange}
                 rows={3}
@@ -85,7 +84,7 @@ export const BookingForm = ({ designId }: Props) => {
 
             <button
                 type="submit"
-                className="md:col-span-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-4 rounded-md transition"
+                className="md:col-span-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition duration-200 shadow-md hover:scale-105"
             >
                 Book Slot
             </button>

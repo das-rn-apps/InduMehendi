@@ -10,8 +10,9 @@ export const Card = ({ design, showDetails }: { design: Design; showDetails: boo
                 <img
                     src={firstImage.url}
                     alt={firstImage.altText || design.title}
-                    className="w-full h-48 object-cover"
+                    className="w-full aspect-square object-cover"
                 />
+
             )}
             <div className="px-3 py-2">
                 <h3 className="text-sm font-semibold text-red-500">

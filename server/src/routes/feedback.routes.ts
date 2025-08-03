@@ -1,10 +1,16 @@
 import express from "express";
-import { getAllFeedbacks, getFeedback,addFeedback } from "../controllers/feedback.controller";
+import {
+  getAllFeedbacks,
+  getFeedbacksByDesignId,
+  createFeedback,
+  deleteFeedback,
+} from "../controllers/feedback.controller";
 
 const router = express.Router();
 
-router.get("/:id", getFeedback);
 router.get("/", getAllFeedbacks);
-router.post("/", addFeedback);
+router.get("/:designId", getFeedbacksByDesignId);
+router.post("/", createFeedback);
+router.delete("/:id", deleteFeedback); // GET all feedback for a specific design
 
 export default router;

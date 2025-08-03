@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { useFeedbackStore } from "../../zustand/feedbackStore";
 
-interface Props {
+interface FeedbackFormProps {
     designId: string;
 }
 
-export const FeedbackForm = ({ designId }: Props) => {
+export const FeedbackForm = ({ designId }: FeedbackFormProps) => {
+    const { addFeedback, loading, error } = useFeedbackStore();
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -14,61 +17,70 @@ export const FeedbackForm = ({ designId }: Props) => {
     });
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleStarClick = (rating: number) => {
+    const handleRating = (rating: number) => {
         setFormData((prev) => ({ ...prev, rating }));
     };
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log("Feedback submitted:", { designId, ...formData });
-        // TODO: Send to API
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            await addFeedback(designId, {
+                name: formData.name,
+                email: formData.email,
+                message: formData.message,
+                rating: formData.rating,
+            });
+            setFormData({ name: "", email: "", message: "", rating: 5 });
+        } catch (err) {
+            console.error("Failed to submit feedback", err);
+        }
     };
 
     return (
         <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-200"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-white"
         >
             <input
                 type="text"
                 name="name"
-                placeholder="Your Name"
-                aria-label="Your Name"
-                className="p-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-rose-500"
                 value={formData.name}
                 onChange={handleChange}
-                required
-            />
-            <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                aria-label="Your Email"
-                className="p-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-rose-500"
-                value={formData.email}
-                onChange={handleChange}
+                placeholder="Your Name"
+                className="w-full p-2 bg-gray-900 border border-gray-700 rounded focus:ring-2 focus:ring-red-600 outline-none"
                 required
             />
 
-            <div className="flex items-center gap-1">
+            <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Your Email"
+                className="w-full p-2 bg-gray-900 border border-gray-700 rounded focus:ring-2 focus:ring-red-600 outline-none"
+                required
+            />
+
+            {/* Star Rating */}
+            <div className="flex items-center gap-1 md:col-span-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                     <button
-                        type="button"
                         key={star}
-                        onClick={() => handleStarClick(star)}
+                        type="button"
+                        onClick={() => handleRating(star)}
+                        aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
                         className="focus:outline-none"
                     >
                         <FaStar
                             size={22}
                             className={
-                                star <= formData.rating
-                                    ? "text-yellow-400"
-                                    : "text-gray-300"
+                                star <= formData.rating ? "text-yellow-400" : "text-gray-500"
                             }
                         />
                     </button>
@@ -77,21 +89,27 @@ export const FeedbackForm = ({ designId }: Props) => {
 
             <textarea
                 name="message"
-                placeholder="Your Feedback"
-                aria-label="Your Feedback"
-                className="md:col-span-2 p-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-rose-500"
                 value={formData.message}
                 onChange={handleChange}
+                placeholder="Your Feedback"
                 rows={4}
+                className="md:col-span-2 w-full p-2 bg-gray-900 border border-gray-700 text-white rounded focus:ring-2 focus:ring-red-600 outline-none"
                 required
             />
 
             <button
                 type="submit"
-                className="md:col-span-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-4 rounded-md transition"
+                disabled={loading}
+                className="md:col-span-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition duration-200 shadow-md hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-                Submit Feedback
+                {loading ? "Submitting..." : "Submit Feedback"}
             </button>
+
+            {error && (
+                <div className="md:col-span-2 text-red-400 text-xs text-center mt-1">
+                    {error}
+                </div>
+            )}
         </form>
     );
 };
