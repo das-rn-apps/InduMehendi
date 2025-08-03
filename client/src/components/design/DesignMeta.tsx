@@ -1,23 +1,31 @@
-// src/components/design/DesignMeta.tsx
 import { FaStar } from "react-icons/fa";
+import type { Feedback } from "../../types";
+import { useMemo } from "react";
 
 interface Props {
     title: string;
     description: string;
     category: string;
     tags: string[];
-    rating: number;
-    reviewsCount?: number; // optional
+    feedbacks: Feedback[];
 }
+
 
 export const DesignMeta = ({
     title,
     description,
     category,
     tags,
-    rating,
-    reviewsCount = 0,
+    feedbacks
 }: Props) => {
+
+    // ⭐ Calculate average rating from feedbacks
+    const averageRating = useMemo(() => {
+        if (feedbacks.length === 0) return 0;
+        const total = feedbacks.reduce((sum, f) => sum + (f.rating || 0), 0);
+        return Math.round((total / feedbacks.length) * 10) / 10;
+    }, [feedbacks]);
+
     return (
         <div className="space-y-3">
             {/* Title */}
@@ -29,11 +37,11 @@ export const DesignMeta = ({
                     <FaStar
                         key={i}
                         size={18}
-                        className={i <= rating ? "text-yellow-400" : "text-gray-300"}
+                        className={i <= Math.round(averageRating) ? "text-yellow-400" : "text-gray-300"}
                     />
                 ))}
                 <span className="text-sm text-gray-500 ml-2">
-                    ({reviewsCount} review{reviewsCount !== 1 ? "s" : ""})
+                    ({feedbacks.length} review{feedbacks.length !== 1 ? "s" : ""})
                 </span>
             </div>
 

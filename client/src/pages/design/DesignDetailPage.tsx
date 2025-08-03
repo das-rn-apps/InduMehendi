@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDesignStore } from "../../zustand/designStore";
+import { useFeedbackStore } from "../../zustand/feedbackStore";
 import { ImageCarousel } from "../../components/design/ImageCarousel";
 import { DesignMeta } from "../../components/design/DesignMeta";
 import { FeedbackForm } from "../../components/design/FeedbackForm";
 import { FeedbackList } from "../../components/design/FeedbackList";
 import { BookingCTA } from "../../components/home/BookingCTA";
+import type { Feedback } from "../../types";
+import { Loader } from "../../components/ui/Loader";
 
 export default function DesignDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -14,6 +17,10 @@ export default function DesignDetailPage() {
         getDesignById,
         fetchDesignById,
     } = useDesignStore();
+
+    const { getFeedbacksByDesignId, loading: feedbackLoading, error: feedbackError } = useFeedbackStore();
+    const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+    const [feedbackLoaded, setFeedbackLoaded] = useState(false);
 
     const [loading, setLoading] = useState(false);
     const [notFound, setNotFound] = useState(false);
@@ -31,13 +38,21 @@ export default function DesignDetailPage() {
             }
         };
 
+        const loadFeedbacks = async () => {
+            if (!id || feedbackLoaded) return;
+            const fetched = await getFeedbacksByDesignId(id);
+            setFeedbacks(fetched);
+            setFeedbackLoaded(true);
+        };
+
         loadDesign();
-    }, [id, getDesignById, fetchDesignById]);
+        loadFeedbacks();
+    }, [id, getDesignById, fetchDesignById, getFeedbacksByDesignId, feedbackLoaded]);
 
     const design = currentDesign || getDesignById(id!);
 
     if (loading) {
-        return <div className="p-6 text-center text-gray-400">Loading...</div>;
+        return <Loader message="Loading..." />;
     }
 
     if (notFound || !design) {
@@ -56,7 +71,7 @@ export default function DesignDetailPage() {
                     description={design.description}
                     category={design.category}
                     tags={design.tags}
-                    rating={design.rating}
+                    feedbacks={feedbacks} // 💡 pass down
                 />
                 <div className="py-4">
                     <BookingCTA designId={design._id} />
@@ -70,7 +85,11 @@ export default function DesignDetailPage() {
                 </div>
                 <div className="border-t">
                     <h2 className="text-xl font-semibold text-rose-700 mb-2">What others are saying</h2>
-                    <FeedbackList designId={design._id} />
+                    <FeedbackList
+                        feedbacks={feedbacks} // 💡 pass down
+                        loading={feedbackLoading}
+                        error={feedbackError}
+                    />
                 </div>
             </div>
         </div>

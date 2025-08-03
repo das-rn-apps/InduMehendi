@@ -3,6 +3,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { useDesignStore } from "../zustand/designStore";
 import { useSearchParams } from "react-router-dom";
+import { Loader } from "../components/ui/Loader";
 
 export default function BookingPage() {
     const [searchParams] = useSearchParams();
@@ -65,9 +66,7 @@ export default function BookingPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center text-gray-400">
-                Loading...
-            </div>
+            <Loader message="Loading..." />
         );
     }
 

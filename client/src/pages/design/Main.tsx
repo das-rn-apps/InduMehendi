@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useDesignStore } from "../../zustand/designStore";
 import { useEffect } from "react";
 import { Card } from "../../components/ui/Card";
+import { Loader } from "../../components/ui/Loader";
 
 export default function DesignGalleryPage() {
     const { designs, fetchDesigns, loading, error } = useDesignStore();
@@ -13,7 +14,7 @@ export default function DesignGalleryPage() {
 
     return (
         <div >
-            {loading && <p className="text-center text-gray-500">Loading designs...</p>}
+            {loading && <Loader message="Loading designs..." />}
             {error && <p className="text-center text-red-500">{error}</p>}
 
             <div className="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">

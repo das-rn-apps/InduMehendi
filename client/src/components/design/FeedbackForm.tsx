@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { useFeedbackStore } from "../../zustand/feedbackStore";
+import { Loader } from "../ui/Loader";
 
 interface FeedbackFormProps {
     designId: string;
@@ -102,7 +103,7 @@ export const FeedbackForm = ({ designId }: FeedbackFormProps) => {
                 disabled={loading}
                 className="md:col-span-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition duration-200 shadow-md hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-                {loading ? "Submitting..." : "Submit Feedback"}
+                {loading ? <Loader message="Loading designs..." /> : "Submit Feedback"}
             </button>
 
             {error && (
