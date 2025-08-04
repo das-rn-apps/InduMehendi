@@ -1,5 +1,5 @@
 // src/components/home/MostPicked.tsx
-import { useDesignStore } from "../../zustand/designStore";
+import { useDesignStore } from "../../store/designStore";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../ui/Card";

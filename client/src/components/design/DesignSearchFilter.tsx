@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useDesignStore } from "../../zustand/designStore";
+import { useEffect, useState, useMemo } from "react";
+import { useDesignStore } from "../../store/designStore";
 import type { Design } from "../../types";
 import { FaSearch, FaFilter } from "react-icons/fa";
 
@@ -13,11 +13,24 @@ export const DesignSearchFilter = ({ onFilter }: Props) => {
     const [category, setCategory] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
 
+    // Only fetch if empty
     useEffect(() => {
-        fetchDesigns();
-    }, [fetchDesigns]);
+        if (designs.length === 0) {
+            fetchDesigns();
+        }
+    }, [fetchDesigns, designs]);
 
-    useEffect(() => {
+    // Unique categories
+    const uniqueCategories = useMemo(
+        () =>
+            Array.from(new Set(designs.map((d) => d.category))).filter(
+                Boolean
+            ),
+        [designs]
+    );
+
+    // Filter designs using memo
+    const filteredDesigns = useMemo(() => {
         let filtered = designs;
 
         if (searchTerm.trim()) {
@@ -33,17 +46,19 @@ export const DesignSearchFilter = ({ onFilter }: Props) => {
             filtered = filtered.filter((d) => d.category === category);
         }
 
-        onFilter(filtered);
-    }, [searchTerm, category, designs, onFilter]);
+        return filtered;
+    }, [designs, searchTerm, category]);
 
-    const uniqueCategories = Array.from(
-        new Set(designs.map((d) => d.category))
-    ).filter(Boolean);
+    // Update parent when filter changes
+    useEffect(() => {
+        onFilter(filteredDesigns);
+    }, [filteredDesigns, onFilter]);
 
     return (
         <>
-            {/* Search + Filter Button */}
+            {/* Search and Filter Button */}
             <div className="flex items-center mb-4 gap-3">
+                {/* Search Input */}
                 <div className="relative flex-1">
                     <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
@@ -55,22 +70,24 @@ export const DesignSearchFilter = ({ onFilter }: Props) => {
                     />
                 </div>
 
+                {/* Filter Button - Same height as input */}
                 <button
                     onClick={() => setModalOpen(true)}
-                    className="p-2 rounded-lg bg-gray-800 hover:bg-red-600 transition border border-gray-700 text-white"
+                    className="h-11 px-4 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-red-600 transition border border-gray-700 text-white"
                     title="Filter by category"
                 >
                     <FaFilter />
                 </button>
             </div>
 
-            {/* Modal */}
+
+            {/* Category Modal */}
             {modalOpen && (
                 <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex items-center justify-center px-4">
                     <div className="bg-gray-900 border border-red-700 p-6 rounded-xl w-full max-w-xs text-white relative shadow-xl animate-fade-in">
                         <button
                             onClick={() => setModalOpen(false)}
-                            className="absolute top-2 right-2 text-gray-400 hover:text-red-400"
+                            className="absolute top-2 right-2 text-gray-400 hover:text-red-400 text-xl"
                         >
                             ✕
                         </button>
@@ -84,7 +101,7 @@ export const DesignSearchFilter = ({ onFilter }: Props) => {
                             value={category}
                             onChange={(e) => {
                                 setCategory(e.target.value);
-                                setModalOpen(false); // close modal after selection
+                                setModalOpen(false);
                             }}
                         >
                             <option value="">All Categories</option>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
-import { useDesignStore } from "../zustand/designStore";
+import { useDesignStore } from "../store/designStore";
 import { useSearchParams } from "react-router-dom";
 import { Loader } from "../components/ui/Loader";
 

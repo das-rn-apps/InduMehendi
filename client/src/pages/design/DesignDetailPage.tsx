@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useDesignStore } from "../../zustand/designStore";
-import { useFeedbackStore } from "../../zustand/feedbackStore";
+import { useDesignStore } from "../../store/designStore";
+import { useFeedbackStore } from "../../store/feedbackStore";
 import { ImageCarousel } from "../../components/design/ImageCarousel";
 import { DesignMeta } from "../../components/design/DesignMeta";
 import { FeedbackForm } from "../../components/design/FeedbackForm";

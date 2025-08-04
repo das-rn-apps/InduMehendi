@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useDesignStore } from "../../zustand/designStore";
+import { useDesignStore } from "../../store/designStore";
 import { useEffect, useState } from "react";
 import { Card } from "../../components/ui/Card";
 import { Loader } from "../../components/ui/Loader";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { useFeedbackStore } from "../../zustand/feedbackStore";
+import { useFeedbackStore } from "../../store/feedbackStore";
 import { Loader } from "../ui/Loader";
 
 interface FeedbackFormProps {

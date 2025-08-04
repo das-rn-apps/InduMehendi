@@ -5,7 +5,7 @@ import {
     faSignInAlt,
     faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import { useAuthStore } from '../../zustand/authStore';
+import { useAuthStore } from '../../store/authStore';
 import logo from "../../assets/logo.png";
 
 export const Header = () => {
