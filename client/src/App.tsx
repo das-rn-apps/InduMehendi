@@ -9,6 +9,7 @@ import ContactPage from './pages/ContactPage';
 import BookingPage from './pages/BookingPage';
 import DesignGalleryPage from './pages/design/Main';
 import DesignDetailPage from './pages/design/DesignDetailPage';
+import AboutPage from './pages/AboutPage';
 
 
 function App() {
@@ -20,12 +21,12 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/booking" element={<BookingPage />} />
             <Route path="/design" element={<DesignGalleryPage />} />
             <Route path="/design/:id" element={<DesignDetailPage />} />
-
             <Route
               path="*"
               element={

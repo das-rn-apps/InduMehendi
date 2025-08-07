@@ -4,6 +4,7 @@ import { BookingCTA } from "../../components/home/BookingCTA";
 import { ExploreSection } from "../../components/home/ExploreSection";
 import { HeroCarousel } from "../../components/home/HeroCarousel";
 import { MostPicked } from "../../components/home/MostPicked";
+import WhatsAppFloater from "../../components/home/Whatsapp";
 
 export default function HomePage() {
     return (
@@ -12,6 +13,7 @@ export default function HomePage() {
             <MostPicked />
             <ExploreSection />
             <BookingCTA designId={""} />
+            <WhatsAppFloater />
         </div>
     );
 }
