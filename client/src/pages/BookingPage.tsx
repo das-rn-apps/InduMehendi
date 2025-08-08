@@ -4,12 +4,17 @@ import { Card } from "../components/ui/Card";
 import { useDesignStore } from "../store/designStore";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Loader } from "../components/ui/Loader";
+import { useBookingStore } from "../store/bookingStore";
+import { useAuthStore } from "../store/authStore";
 
 export default function BookingPage() {
     const [searchParams] = useSearchParams();
     const designId = searchParams.get("designId");
+    const user = useAuthStore().user;
+
 
     const { currentDesign, getDesignById, fetchDesignById } = useDesignStore();
+    const { addBooking } = useBookingStore();
 
     const [loading, setLoading] = useState(false);
     const [notFound, setNotFound] = useState(false);
@@ -17,33 +22,72 @@ export default function BookingPage() {
     const [form, setForm] = useState({
         name: "",
         email: "",
+        phone: "",
         contact: "",
+        address: "",
         location: "",
-        date: "",
-        note: "",
+        hand: "both",
+        personType: "guest",
+        personCount: 1,
+        bookingDate: "",
+        bookingTime: "",
+        notes: "",
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const bookingData = {
-            ...(designId ? { designId } : {}),
-            ...form,
-        };
+        try {
+            const bookingData = {
+                ...(designId ? { design: designId } : {}),
+                user: user?._id,
+                ...form,
+            };
 
-        console.log("Booking submitted:", bookingData);
-        alert("Booking submitted!");
-        // TODO: Send to backend
+            if (!form.name || !form.email || !form.phone || !form.bookingDate || !form.bookingTime) {
+                alert("Please fill all required fields before submitting.");
+                return;
+            }
+
+            const result = await addBooking(bookingData);
+
+            if (result) {
+                setForm({
+                    name: "",
+                    email: "",
+                    phone: "",
+                    contact: "",
+                    address: "",
+                    location: "",
+                    hand: "both",
+                    personType: "guest",
+                    personCount: 1,
+                    bookingDate: "",
+                    bookingTime: "",
+                    notes: "",
+                });
+            } else {
+                alert("Failed to submit booking");
+            }
+        } catch (err: any) {
+            console.error("Booking error:", err);
+            alert(err?.response?.data?.message || err?.message || "Something went wrong");
+        }
     };
+
 
     useEffect(() => {
         const loadDesign = async () => {
-            if (!designId) return; // Only fetch if designId exists
+            if (!designId) return;
             const cached = getDesignById(designId);
             if (!cached) {
                 setLoading(true);
@@ -84,74 +128,147 @@ export default function BookingPage() {
             {/* Booking form */}
             <form
                 onSubmit={handleSubmit}
-                className="bg-gray-900 border border-red-700 rounded-xl p-6 w-full shadow-lg text-white"
+                className="bg-gray-900 border border-red-700 rounded-xl p-6 w-full shadow-lg text-white grid grid-cols-1 md:grid-cols-2 gap-2"
             >
-                <h2 className="text-2xl font-bold text-red-500 mb-4 text-center">
+                <h2 className="md:col-span-2 text-2xl font-bold text-red-500 mb-2 text-center">
                     Book Your Mehendi Slot
                 </h2>
 
+                {/* Name */}
                 <input
                     name="name"
                     value={form.name}
                     onChange={handleChange}
                     placeholder="Full Name"
                     required
-                    className="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
                 />
 
+                {/* Email */}
                 <input
                     name="email"
+                    type="email"
                     value={form.email}
                     onChange={handleChange}
                     placeholder="Email Address"
-                    type="email"
                     required
-                    className="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
                 />
 
+                {/* Contact */}
                 <input
                     name="contact"
                     value={form.contact}
                     onChange={handleChange}
-                    placeholder="Contact Number"
+                    placeholder="Alternate Contact Number"
                     required
-                    className="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
                 />
 
+                {/* Phone */}
+                <input
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                    placeholder="Primary Phone Number"
+                    required
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                />
+
+                {/* Address */}
+                <input
+                    name="address"
+                    value={form.address}
+                    onChange={handleChange}
+                    placeholder="Full Address"
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                />
+
+                {/* Location */}
                 <input
                     name="location"
                     value={form.location}
                     onChange={handleChange}
-                    placeholder="Your Location"
+                    placeholder="Event Location"
                     required
-                    className="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
                 />
 
+                {/* Hand */}
+                <select
+                    name="hand"
+                    value={form.hand}
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                >
+                    <option value="left">Left</option>
+                    <option value="right">Right</option>
+                    <option value="both">Both</option>
+                </select>
+
+                {/* Person Type */}
+                <select
+                    name="personType"
+                    value={form.personType}
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                >
+                    <option value="bride">Bride</option>
+                    <option value="groom">Groom</option>
+                    <option value="guest">Guest</option>
+                    <option value="other">Other</option>
+                </select>
+
+                {/* Person Count */}
                 <input
-                    name="date"
+                    name="personCount"
+                    type="number"
+                    value={form.personCount}
+                    onChange={handleChange}
+                    placeholder="Number of Persons"
+                    min={1}
+                    required
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                />
+
+                {/* Booking Date */}
+                <input
+                    name="bookingDate"
                     type="date"
-                    value={form.date}
+                    value={form.bookingDate}
                     onChange={handleChange}
                     required
-                    className="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
                 />
 
+                {/* Booking Time */}
+                <input
+                    name="bookingTime"
+                    type="time"
+                    value={form.bookingTime}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                />
+
+                {/* Notes */}
                 <textarea
-                    name="note"
-                    value={form.note}
+                    name="notes"
+                    value={form.notes}
                     onChange={handleChange}
                     placeholder="Additional Notes"
                     rows={3}
-                    className="w-full mb-4 p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
+                    className="md:col-span-2 w-full p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
                 />
 
                 <Button
                     type="submit"
-                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg transition"
+                    className="md:col-span-2 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg transition"
                 >
                     Confirm Booking
                 </Button>
             </form>
+
         </div>
     );
 }

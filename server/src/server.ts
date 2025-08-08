@@ -6,6 +6,7 @@ import design from "./routes/design.routes";
 import auth from "./routes/auth.routes";
 import user from "./routes/user.routes";
 import feedback from "./routes/feedback.routes";
+import booking from "./routes/booking.routes";
 
 dotenv.config();
 connectDB();
@@ -20,6 +21,7 @@ app.use("/auth", auth);
 app.use("/user", user);
 app.use("/design", design);
 app.use("/feedback", feedback);
+app.use("/booking", booking);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

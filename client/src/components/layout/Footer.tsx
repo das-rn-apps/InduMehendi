@@ -17,8 +17,6 @@ export function Footer() {
 
     return (
         <footer className="bg-gray-950 text-gray-300 pt-12 pb-6 border-t border-gray-900 relative">
-            {/* Decorative gradient line on top */}
-            {/* <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-800 via-red-900 to-red-950"></div> */}
 
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-3 gap-2">
                 {/* Brand & About */}

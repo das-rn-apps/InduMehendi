@@ -10,7 +10,7 @@ import BookingPage from './pages/BookingPage';
 import DesignGalleryPage from './pages/design/Main';
 import DesignDetailPage from './pages/design/DesignDetailPage';
 import AboutPage from './pages/AboutPage';
-import MyBookings from './components/booking/MyBookings';
+import MyBookings from './pages/MyBookings';
 
 
 function App() {

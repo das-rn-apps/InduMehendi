@@ -1,19 +1,30 @@
 // src/store/bookingStore.ts
 import { create } from "zustand";
 import axios from "axios";
-import type { Design } from "../types";
+import type { Design, User } from "../types";
 
 export interface Booking {
   _id: string;
-  design?: Design;
   name: string;
   email: string;
-  contact: string;
+  contact?: string;
   location: string;
-  date: string;
+  design?: Design;
+  designId?: string; // in case you only store ID in some scenarios
+  personCount: number;
+  date: string; // ISO date string (YYYY-MM-DD)
   note?: string;
-  status: "Pending" | "Confirmed" | "Cancelled";
   createdAt?: string;
+  updatedAt?: string;
+  user: User;
+  phone: string;
+  address?: string;
+  hand: "left" | "right" | "both";
+  personType: "bride" | "groom" | "guest" | "other";
+  bookingDate: string;
+  bookingTime: string;
+  status: "pending" | "confirmed" | "completed" | "cancelled";
+  notes?: string;
 }
 
 interface BookingState {
@@ -24,9 +35,7 @@ interface BookingState {
 
   fetchBookings: () => Promise<void>;
   fetchBookingById: (id: string) => Promise<Booking | null>;
-  addBooking: (
-    data: Omit<Booking, "_id" | "status">
-  ) => Promise<Booking | null>;
+  addBooking: (data: any) => Promise<Booking | null>;
   updateBookingStatus: (
     id: string,
     status: Booking["status"]
@@ -42,11 +51,16 @@ export const useBookingStore = create<BookingState>((set, get) => ({
   loading: false,
   error: null,
 
-  // Fetch all bookings for the current user
+  // Fetch all bookings for the current logged-in user
   fetchBookings: async () => {
     set({ loading: true, error: null });
     try {
-      const res = await axios.get(`${API_BASE_URL}/booking`);
+      const token = localStorage.getItem("token"); // get token from localStorage
+      const res = await axios.get(`${API_BASE_URL}/booking/my`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // send token here
+        },
+      });
       set({ bookings: res.data.bookings || [], loading: false });
     } catch (err: any) {
       set({

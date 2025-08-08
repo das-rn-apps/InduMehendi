@@ -2,10 +2,11 @@ import axios from "axios";
 import { create } from "zustand";
 
 interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
-  // Add more fields as needed
+  token: string;
+  isAdmin: boolean;
 }
 
 interface AuthState {
