@@ -20,7 +20,7 @@ export function Footer() {
             {/* Decorative gradient line on top */}
             {/* <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-800 via-red-900 to-red-950"></div> */}
 
-            <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div className="max-w-7xl mx-auto px-6 grid grid-cols-3 gap-2">
                 {/* Brand & About */}
                 <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
                     <div className="flex items-center gap-2 text-2xl font-bold mb-4 text-white">
