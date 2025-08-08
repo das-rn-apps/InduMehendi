@@ -10,6 +10,7 @@ import BookingPage from './pages/BookingPage';
 import DesignGalleryPage from './pages/design/Main';
 import DesignDetailPage from './pages/design/DesignDetailPage';
 import AboutPage from './pages/AboutPage';
+import MyBookings from './components/booking/MyBookings';
 
 
 function App() {
@@ -25,7 +26,8 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/booking" element={<BookingPage />} />
-            <Route path="/design" element={<DesignGalleryPage />} />
+            <Route path="/my-bookings" element={<MyBookings />} />
+            <Route path="/designs" element={<DesignGalleryPage />} />
             <Route path="/design/:id" element={<DesignDetailPage />} />
             <Route
               path="*"

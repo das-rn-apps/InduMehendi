@@ -28,7 +28,8 @@ export const Header = () => {
 
                 {/* Navigation */}
                 <nav className="flex gap-4 items-center text-lg relative">
-                    <Link to="/design" className="hover:font-bold">Designs</Link>
+                    <Link to="/designs" className="hover:font-bold">Designs</Link>
+                    <Link to="/about" className="hover:font-bold">About</Link>
 
                     {isAuthenticated ? (
                         <div className="relative">
@@ -50,7 +51,7 @@ export const Header = () => {
                                     onMouseLeave={closeMenu}
                                 >
                                     <Link
-                                        to="/bookings"
+                                        to="/my-bookings"
                                         onClick={closeMenu}
                                         className="px-4 py-2 hover:bg-red-100 hover:rounded flex items-center gap-2"
                                     >

@@ -1,7 +1,7 @@
 // src/pages/HomePage.tsx
 
 import { BookingCTA } from "../../components/home/BookingCTA";
-import { ExploreSection } from "../../components/home/ExploreSection";
+import ExploreSection from "../../components/home/ExploreSection";
 import { HeroCarousel } from "../../components/home/HeroCarousel";
 import { MostPicked } from "../../components/home/MostPicked";
 import WhatsAppFloater from "../../components/home/Whatsapp";

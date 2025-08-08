@@ -2,18 +2,14 @@ import { useEffect, useState } from "react";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { useDesignStore } from "../store/designStore";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Loader } from "../components/ui/Loader";
 
 export default function BookingPage() {
     const [searchParams] = useSearchParams();
     const designId = searchParams.get("designId");
 
-    const {
-        currentDesign,
-        getDesignById,
-        fetchDesignById,
-    } = useDesignStore();
+    const { currentDesign, getDesignById, fetchDesignById } = useDesignStore();
 
     const [loading, setLoading] = useState(false);
     const [notFound, setNotFound] = useState(false);
@@ -34,14 +30,20 @@ export default function BookingPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log({ designId, ...form });
+
+        const bookingData = {
+            ...(designId ? { designId } : {}),
+            ...form,
+        };
+
+        console.log("Booking submitted:", bookingData);
         alert("Booking submitted!");
         // TODO: Send to backend
     };
 
     useEffect(() => {
         const loadDesign = async () => {
-            if (!designId) return;
+            if (!designId) return; // Only fetch if designId exists
             const cached = getDesignById(designId);
             if (!cached) {
                 setLoading(true);
@@ -54,23 +56,13 @@ export default function BookingPage() {
         loadDesign();
     }, [designId, getDesignById, fetchDesignById]);
 
-    const design = getDesignById(designId!) || currentDesign;
-
-    if (!designId) {
-        return (
-            <div className="min-h-screen flex items-center justify-center text-red-500">
-                No design ID provided.
-            </div>
-        );
-    }
+    const design = designId ? getDesignById(designId) || currentDesign : null;
 
     if (loading) {
-        return (
-            <Loader message="Loading..." />
-        );
+        return <Loader message="Loading..." />;
     }
 
-    if (notFound || !design) {
+    if (designId && (notFound || !design)) {
         return (
             <div className="min-h-screen flex items-center justify-center text-gray-500">
                 Design not found
@@ -79,16 +71,24 @@ export default function BookingPage() {
     }
 
     return (
-        <div className=" p-3 flex flex-col lg:flex-row items-start justify-center gap-8">
-            <div className="w-full">
-                <Card design={design} showDetails={true} />
-            </div>
+        <div className="p-3 flex flex-col lg:flex-row items-start justify-center gap-8">
+            {/* Show design card only if designId is provided */}
+            {design ? (
+                <div className="w-full lg:w-1/2">
+                    <Card design={design} showDetails={true} />
+                </div>
+            ) : (
+                <Designs showSelectMessage={true} />
+            )}
 
+            {/* Booking form */}
             <form
                 onSubmit={handleSubmit}
-                className="bg-gray-900 border border-red-700 rounded-xl p-6 w-full  shadow-lg text-white"
+                className="bg-gray-900 border border-red-700 rounded-xl p-6 w-full shadow-lg text-white"
             >
-                <h2 className="text-2xl font-bold text-red-500 mb-4 text-center">Book Your Mehendi Slot</h2>
+                <h2 className="text-2xl font-bold text-red-500 mb-4 text-center">
+                    Book Your Mehendi Slot
+                </h2>
 
                 <input
                     name="name"
@@ -145,10 +145,36 @@ export default function BookingPage() {
                     className="w-full mb-4 p-2 rounded bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-red-600 outline-none"
                 />
 
-                <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg transition">
+                <Button
+                    type="submit"
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg transition"
+                >
                     Confirm Booking
                 </Button>
             </form>
+        </div>
+    );
+}
+
+function Designs({ showSelectMessage = false }) {
+    const navigate = useNavigate();
+
+    return (
+        <div className="w-full">
+            {showSelectMessage && (
+                <div className="bg-gray-900 border border-red-700 text-center text-red-400 p-3 rounded-lg mb-4">
+                    Please select a design to proceed with booking.
+                </div>
+            )}
+
+            <div className="flex justify-center">
+                <Button
+                    onClick={() => navigate("/designs")}
+                    className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg"
+                >
+                    Go to Designs
+                </Button>
+            </div>
         </div>
     );
 }

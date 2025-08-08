@@ -8,7 +8,12 @@ export const BookingCTA = ({ designId }: Props) => {
     const navigate = useNavigate();
 
     const handleBookingClick = () => {
-        navigate(`/booking?designId=${designId}`);
+        if (designId) {
+            navigate(`/booking?designId=${designId}`);
+        }
+        else {
+            navigate(`/booking`);
+        }
 
     };
 

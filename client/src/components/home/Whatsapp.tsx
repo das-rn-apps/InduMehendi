@@ -6,7 +6,7 @@ const WhatsAppFloater = () => {
 
     return (
         <a
-            href={`https://wa.me/${whatsappNumber}`}
+            href={`https://wa.me/${whatsappNumber}?text=Hi%20Indu!%20I%20want%20to%20book%20a%20mehendi%20appointment.`}
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300"
